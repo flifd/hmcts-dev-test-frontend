@@ -1,121 +1,292 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% extends "template.njk" %}
 
-<!-- You may want to make further use of these components: https://design-system.service.gov.uk/components/
-but ultimately it is up to you -->
+<!-- You may want to make further use of these components: https://design-system.service.gov.uk/components/ but ultimately it is up to you -->
 
 {% block content %}
-  <h1 class="govuk-heading-xl">Welcome to your dev test!</h1>
+  <h1 class="govuk-heading-xl">Welcome to the HMCTS task app!</h1>
 
-  <!-- The freedom is yours. You can design the solution however you like, however there is a starting point provided
-  to ensure you have both services running. You may want to make use of the Gov UK Components:
-  https://design-system.service.gov.uk/components/ to add tabs and so forth :) -->
+  <!-- The freedom is yours. You can design the solution however you like, however there is a starting point provided to ensure you have both services running. You may want to make use of the Gov UK Components: https://design-system.service.gov.uk/components/ to add tabs and so forth :) -->
 
-  {% if example.id %}
+  {% if taskSize > 0 %}
+    {% set pendingRows = [] %}
+    {% for task in tasks %}
+      {% if task.status == "PENDING" %}
+        {% set pendingRows = (pendingRows.push([
+          {
+            text: task.title
+          }, {
+            text: task.description
+          }, {
+            text: task.dueTimestamp
+          }, {
+            text: task.updatedTimestamp
+          }, {
+            text: task.createdTimestamp
+          }
+        ]), pendingRows) %}
+      {% elif task.status == "IN_PROGRESS" %}
+        {% set inProgress = (inProgressRows.push([
+          {
+            text: task.title
+          }, {
+            text: task.description
+          }, {
+            text: task.dueTimestamp
+          }, {
+            text: task.updatedTimestamp
+          }, {
+            text: task.createdTimestamp
+          }
+        ]), inProgress) %}
+      {% elif task.status == "COMPLETED" %}
+        {% set completedRows = (completedRows.push([
+          {
+            text: task.title
+          }, {
+            text: task.description
+          }, {
+            text: task.dueTimestamp
+          }, {
+            text: task.updatedTimestamp
+          }, {
+            text: task.createdTimestamp
+          }
+        ]), completedRows) %}
+      {% endif %}
+    {% endfor %}
 
-    {{ govukSummaryList({
-      rows: [
-        {
-          key: {
-            text: "ID"
-          },
-          value: {
-            text: example.id
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case id ?!"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Case Number"
-          },
-          value: {
-            text: example.caseNumber
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case number"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Title"
-          },
-          value: {
-            html: example.title
-          },
-          actions: {
-            items: [
-              {
-                href: "#",
-                text: "Change",
-                visuallyHiddenText: "change case title"
-              }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Description"
-          },
-          value: {
-            html: example.description
-          },
-          actions: {
-            items: [
-               {
-                 href: "#",
-                 text: "Delete",
-                 visuallyHiddenText: "Delete description"
-               },
-               {
-                 href: "#",
-                 text: "Change",
-                 visuallyHiddenText: "Change description"
-               }
-            ]
-          }
-        },
-        {
-          key: {
-            text: "Status"
-          },
-          value: {
-            html: example.status
-          },
-          actions: {
-            items: [
-            ]
-          }
-        },
-        {
-          key: {
-           text: "Created Date"
-          },
-          value: {
-           html: example.createdDate
-          },
-          actions: {
-           items: [
-           ]
-          }
-        }
-      ]
-    }) }}
+    {% set pendingTaskHtml %}
+    <h2 class="govuk-heading-l">Pending</h2>
+    {{ govukTable({
+  head: [
+    { text: "Title" },
+    { text: "Description" },
+    { text: "Due by" },
+    { text: "Last updated" },
+    { text: "Created" }
+  ],
+  rows: pendingRows
+}) }}
+    {% endset %}
 
+    {% set inProgressTaskHtml %}
+    <h2 class="govuk-heading-l">In Progress</h2>
+    {{ govukTable({
+  head: [
+    { text: "Title" },
+    { text: "Description" },
+    { text: "Due by" },
+    { text: "Last updated" },
+    { text: "Created" }
+  ],
+  rows: inProgressRows
+}) }}
+    {% endset %}
+
+    {% set completedTaskHtml %}
+    <h2 class="govuk-heading-l">Completed</h2>
+    {{ govukTable({
+  head: [
+    { text: "Title" },
+    { text: "Description" },
+    { text: "Due by" },
+    { text: "Last updated" },
+    { text: "Created" }
+  ],
+  rows: completedRows
+}) }}
+    {% endset %}
+    {% else %}
+    <p class="govuk-body">Looks like you haven't created any tasks yet. <a href="/tasks/new" class="govuk-link">Get started here!</a></p>
   {% endif %}
 
+
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pastDayHtml %}
+<h2 class="govuk-heading-l">Past day</h2>
+{{ govukTable({
+  head: [
+    {
+      text: "Case manager"
+    },
+    {
+      text: "Cases opened"
+    },
+    {
+      text: "Cases closed"
+    }
+  ],
+  rows: [
+    [
+      {
+        text: "David Francis"
+      },
+      {
+        text: "3"
+      },
+      {
+        text: "0"
+      }
+    ],
+    [
+      {
+        text: "Paul Farmer"
+      },
+      {
+        text: "1"
+      },
+      {
+        text: "0"
+      }
+    ],
+    [
+      {
+        text: "Rita Patel"
+      },
+      {
+        text: "2"
+      },
+      {
+        text: "0"
+      }
+    ]
+  ]
+}) }}
+{% endset -%}
+
+{% set pastWeekHtml %}
+<h2 class="govuk-heading-l">Past week</h2>
+{{ govukTable({
+  head: [
+    {
+      text: "Case manager"
+    },
+    {
+      text: "Cases opened"
+    },
+    {
+      text: "Cases closed"
+    }
+  ],
+  rows: [
+    [
+      {
+        text: "David Francis"
+      },
+      {
+        text: "24"
+      },
+      {
+        text: "18"
+      }
+    ],
+    [
+      {
+        text: "Paul Farmer"
+      },
+      {
+        text: "16"
+      },
+      {
+        text: "20"
+      }
+    ],
+    [
+      {
+        text: "Rita Patel"
+      },
+      {
+        text: "24"
+      },
+      {
+        text: "27"
+      }
+    ]
+  ]
+}) }}
+{% endset -%}
+
+{% set pastMonthHtml %}
+<h2 class="govuk-heading-l">Past month</h2>
+{{ govukTable({
+  head: [
+    {
+      text: "Case manager"
+    },
+    {
+      text: "Cases opened"
+    },
+    {
+      text: "Cases closed"
+    }
+  ],
+  rows: [
+    [
+      {
+        text: "David Francis"
+      },
+      {
+        text: "98"
+      },
+      {
+        text: "95"
+      }
+    ],
+    [
+      {
+        text: "Paul Farmer"
+      },
+      {
+        text: "122"
+      },
+      {
+        text: "131"
+      }
+    ],
+    [
+      {
+        text: "Rita Patel"
+      },
+      {
+        text: "126"
+      },
+      {
+        text: "142"
+      }
+    ]
+  ]
+}) }}
+{% endset -%}
+
+{{ govukTabs({
+  items: [
+    {
+      label: "Pending",
+      id: "pending",
+      panel: {
+        html: pendingTaskHtml
+      }
+    },
+    {
+      label: "In progress",
+      id: "in-progress",
+      panel: {
+        html: inProgressTaskHtml
+      }
+    },
+    {
+      label: "Completed",
+      id: "completed",
+      panel: {
+        html: completedTaskHtml
+      }
+    }
+  ]
+}) }}
 {% endblock %}

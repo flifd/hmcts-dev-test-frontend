@@ -1,0 +1,58 @@
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+
+{% extends "template.njk" %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Create a new task</h1>
+
+    <form method="POST" action="/tasks/create">
+        {{ govukInput({
+    label: {
+    text: "What is the name of the task?",
+    classes: "govuk-label--l",
+    isPageHeading: false
+  },
+  id: "title",
+  name: "title"
+    }) }}
+
+        {{ govukInput({
+    label: {
+    text: "What is the description of the task?",
+    classes: "govuk-label--l",
+    isPageHeading: false
+  },
+  id: "description",
+  name: "description"
+    }) }}
+
+        {{ govukDateInput({
+      id: "due-date",
+    namePrefix: "dueDate",
+    fieldset: {
+        legend: {
+        text: "When is the task due?",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--l"
+        }
+    }
+    }) }}
+
+        {{ govukInput({
+    label: {
+    text: "What time is the task due?",
+    classes: "govuk-label--l",
+    isPageHeading: false
+  },
+  id: "due-time",
+  name: "dueTime",
+  type: "time"
+    }) }}
+
+        {{ govukButton({
+      text: "Create task"
+    }) }}
+    </form>
+{% endblock %}
